@@ -1,0 +1,10 @@
+
+
+<button class="btn btn-outline-{{~type_color ?? 'primary'}} btn-sm" type="{{type ?? button}}">
+    {% block content %}{{content ?? 'Boo'}}{% endblock %}
+    {% set icon = icon ?? null %}
+    {% if icon is empty %}
+    {% else %}
+        <span class="fa fa-{{ icon }}"></span>
+    {% endif %}
+</button>

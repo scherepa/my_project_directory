@@ -1,0 +1,46 @@
+{% set currentPath = path(app.request.attributes.get('_route'),
+                       app.request.attributes.get('_route_params')) %}
+{% set currentPage = app.request.get('_route') %}
+{% set paths = [
+    { name:'home', icon:'home',auth:false, link:'', permission:'PUBLIC_ACCESS' },
+    { name:'custom', icon:'manage_accounts', auth:true,link:'custom', permission:'IS_AUTHENTICATED_FULLY' },
+    { name:'admin_home', icon:'monitoring', auth:true, link:'admin', permission:'ROLE_ADMIN' },
+    { name:'logout', icon:'logout', auth:true, link:'logout', permission:'IS_AUTHENTICATED_FULLY' },
+    { name:'login', icon:'login', auth:false, link:'login', permission:null },
+    { name:'register', icon:'app_registration', auth:false, link:'register', permission:null }] %}
+<nav class="navbar" style="background-color: #e3f2fd;">
+    <div class="navbar-nav">
+        <ul class="nav nav-tabs">
+            {% for path in paths %} 
+                {% if path.auth and is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_ADMIN' or path.permission) %}
+                    <li class="nav-item">
+                        <a class="nav-link {{path.name == currentPage ? 'active' : ''}}"  aria-current="page" href="/{{path.link }}">
+                            <span class="material-symbols-outlined  text-secondary">
+                            {{path.icon}}
+                            </span>
+                            {{path.name|title}}
+                        </a>
+                    </li>
+                {% elseif path.permission is not empty and is_granted(path.permission) %}
+                    <li class="nav-item">
+                        <a class="nav-link {{path.name == currentPage ? 'active' : ''}}"  aria-current="page" href="/{{path.link }}">
+                            <span class="material-symbols-outlined  text-secondary">
+                                {{path.icon}}
+                            </span>
+                            {{path.name|title}}
+                        </a>
+                    </li>
+                {% elseif not path.auth and not is_granted('IS_AUTHENTICATED_FULLY')%}
+                <li class="nav-item">
+                        <a class="nav-link {{path.name == currentPage ? 'active' : ''}}"  aria-current="page" href="/{{path.link }}">
+                            <span class="material-symbols-outlined  text-secondary">
+                                {{path.icon}}
+                            </span>
+                            {{path.name|title}}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+</nav>

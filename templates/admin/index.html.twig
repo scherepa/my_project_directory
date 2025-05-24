@@ -1,0 +1,46 @@
+{% extends("layouts/main.html.twig") %}
+{% block title %}Admin{% endblock %}
+
+{% block main %}
+<h1>{{app.user.username |capitalize}}, Welcome to the home page!</h1>
+
+{% if errors|default(null) %}
+    <div class="alert alert-danger px-4">
+        {% if errors|length > 0 %}    
+            <ul class="list-group">
+                {% for error in errors %}
+                    <li class="list-group-item-danger"> {{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endif %}
+<div class="px-2 py-4">
+    {{ include('components/Info.html.twig') }}
+    <div class="pt-4"><h4><b>Users</b></h2></div>
+    
+    {{ include('components/Tbcomp.html.twig', {
+        tbId: 'users',
+        theaders: ['ID','USERNAME','Agent ID','Login Time'],
+        tfooters: ['ID','USERNAME','Agent ID','Login Time'],
+        })
+    }}
+    
+
+    <div class="pt-4"><h4><b>My Agents</b></h4></div>
+    {{ include('components/Tbcomp.html.twig', {
+        tbId: 'reps',
+        theaders: ['ID','USERNAME','Agent ID','Login Time', 'Role'],
+        tfooters: ['ID','USERNAME','Agent ID','Login Time', 'Role'],
+        })
+    }}
+</div>
+{% endblock %}
+{% block body_scripts %}
+{{ parent() }}
+<script src="{{ asset('js/rep_users_table.js') }}"></script>
+{#<script src="{{ asset('js/admin_users_table.js') }}"></script>#}
+<script src="{{ asset('js/admin_agents_table.js') }}"></script>
+
+
+{% endblock %}

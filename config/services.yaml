@@ -1,0 +1,101 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    access_log_enabled: '%env(bool:default::ENABLE_ACCESS_LOG)%'
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+# listener to session for automatic logout
+    App\EventListener\SessionListener:
+        arguments:
+            $session: '@session'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+# service that creates internal web socket - instead used node microservice
+    App\Service\InternalWebSocketServer:
+        arguments:
+            $logger: '@monolog.logger.websocket'
+# service for incomming from api node data
+    App\Controller\WebSocketDataController:
+        arguments:
+            $bearerToken: '%env(API_BEARER_SECRET)%'
+            $allowedIps: '%env(string:API_ALLOWED_IPS)%'
+            $logger: '@App\Service\LoggerService'
+            $assetRepository: '@App\Repository\AssetRepository'
+        public: true
+        tags:
+            - { name: controller.service_arguments }
+# service for currency helper
+    App\Service\CurrencyHelper: ~
+# service to expose currency rates into twig
+    App\Twig\AppExtension:
+        tags:
+            - { name: twig.extension }
+
+# service for request id
+    App\EventListener\RequestIdSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }
+
+# service for all request response debug
+    App\EventListener\AccessLogSubscriber:
+        arguments:
+            $accessLogger: '@monolog.logger.access_log'
+            $enabled: '%access_log_enabled%'
+            $security: '@security.helper'
+        tags:
+            - { name: kernel.event_subscriber }
+
+# service for logs laravel like style
+    App\Service\LoggerService:
+        arguments:
+            $defaultLogger: '@logger'
+            $accessLogger: '@monolog.logger.access_log'
+            $webSocketLogger: '@monolog.logger.websocket'
+
+# service for validator
+    App\Validator\AssignAgentValidator:
+        arguments:
+            $userRepository: '@App\Repository\UserRepository'
+            $security: '@security.helper'
+
+# service to deal with json exception
+    App\EventListener\JsonExceptionSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }
+
+
+
+
+    
+
+# authentication event listener
+    #app.security.authentication_event_listener:
+        #class: App\EventListener\LoginSubscriber
+        #arguments: ["@doctrine.orm.entity_manager","@request_stack"]
+        #tags:
+            #- { name: kernel.event_listener, event: security.authentication.failure, method: onAuthenticationFailure }
+           # - { name: kernel.event_listener, event: security.login_success, method: onLogin }
+
+          
+

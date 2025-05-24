@@ -1,0 +1,20 @@
+<div>
+    <h4><b>My info</b></h4>
+    <div class="row row-cols mt-2">
+        <div class="col"><b>UserName</b></div>
+        <div class="col">{{app.user.username |capitalize}}</div>
+    </div>
+    <div class="row row-cols">
+        <div class="col"><b>Aent ID</b></div>
+        <div class="col">{{app.user.manager_id ?? 'N/A'}}</div>
+    </div>
+    <div class="row row-cols">
+        <div class="col"><b>Currency</b></div>
+        <div class="col">{{app.user.currency}}</div>
+    </div>
+    <div class="row row-cols mb-4">
+        <div class="col"><b>Login Time</b></div>
+        <div class="col">{{app.user.getLoginTime()|date('Y-m-d H:i:s', false)}}</div>
+    </div>
+</div>
+

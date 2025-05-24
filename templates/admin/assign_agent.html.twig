@@ -1,0 +1,12 @@
+{{ form_start(assignAgentForm) }}
+    <div class="input-group">
+        {{ form_widget(assignAgentForm.manager) }}
+            <div class="input-group-append">
+                {{ include('components/button.html.twig', {
+                    type: 'submit',
+                    content: 'OK'
+                }) }}
+            </div>
+    </div>
+{{ form_end(assignAgentForm) }}
+

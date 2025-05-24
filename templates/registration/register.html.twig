@@ -1,0 +1,80 @@
+{% extends('layouts/simple.htm.twig') %}
+
+{% block title %}Register{% endblock %}
+
+{% block main %}
+
+<div class="d-flex justify-content-center py-4">
+    <div style="min-width:max(200px, 50%);">
+    {{ form_start(registrationForm) }}
+    {% if errors %}
+        <div class="alert alert-danger px-4">
+            {% if errors|length > 0 %}
+            
+<ul class="list-group">
+    {% for error in errors %}
+       <li class="list-group-item-danger"> {{ error }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+            </div>
+    {% endif %}
+
+    {% if app.user %}
+        <div class="mb-3">
+            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %}
+
+    {% if app.user %}
+        <div class="mb-3">
+            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+        </div>
+    {% endif %}
+        <h1>Register</h1>
+        <div class="form-group mb-4">
+            <label for="inputUsername" class="mb-2">{{field_label(registrationForm.username)}}</label>
+            <input
+                type="text" 
+                name="{{field_name(registrationForm.username)}}"
+                value="{{ field_value(registrationForm.username) }}"
+                placeholder="{{ field_label(registrationForm.username) }}"
+                id="inputUsername"
+                aria-describedby="usernameHelp"
+                autocomplete="username"
+                class="form-control"
+            >
+            <small id="usernameHelp" class="form-text text-muted">Unique username to use.</small>
+        </div>
+    
+        <div class="form-group mb-4">
+            <label for="inputPassword" class="mb-2">Password</label>
+            <input
+                type="password"
+                name="{{field_name(registrationForm.plainPassword)}}"
+                value="{{ field_value(registrationForm.plainPassword) }}"
+                placeholder="Password"
+                id="inputPassword"
+                class="form-control"
+                required
+                min="6"
+            >
+        </div>
+        <div class="form-group mb-4">
+            <label class="mb-2" for="registration_form_currency">{{field_label(registrationForm.currency)}}</label>
+            <div>
+            <select class="custom-select rounded" id="registration_form_currency" required name="{{field_name(registrationForm.currency)}}">
+            {% for choicelabel, choicevalue in field_choices(registrationForm.currency) %}
+                <option value="{{ choicevalue }}">{{ choicelabel }}</option>
+            {% endfor %}
+            </select>
+        </div>
+        </div> 
+    {{ include('components/button.html.twig', {
+        type: 'submit',
+        content: 'Register'
+    }) }}
+    {{ form_end(registrationForm) }}
+</div>
+</div>
+{% endblock %}

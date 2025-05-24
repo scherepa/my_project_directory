@@ -1,0 +1,22 @@
+<table id="{{tbId}}" class="display mb-4" style="width:100%">
+{% if theaders|default(null) %}
+    <thead>
+        <tr>
+        {% for theader in theaders %}
+            <th>{{theader}}</th>
+        {% endfor %}
+        </tr>
+    </thead>
+{% endif %}
+{% if tfooters|default(null) %}
+        <tfoot>
+            <tr>
+                {% for tfooter in tfooters %}
+                <th>{{tfooter}}</th>
+                {% endfor %}
+            </tr>
+        </tfoot>
+{% endif %}
+</table>
+
+
